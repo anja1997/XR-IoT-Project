@@ -1,31 +1,31 @@
-#Mixed-Reality Telemetry Visualization Project using HoloLens 2, Azure, and MXChip IoT
+# Mixed-Reality Telemetry Visualization Project
 
-Project Overview
-This repository contains the source code and resources for a cutting-edge mixed-reality application developed using Microsoft HoloLens 2, Unity, C#, Azure services, and the MXChip IoT DevKit. The application is designed to gather, transmit, analyze, and visualize real-time telemetry data from a car's windshield, showcasing an innovative use of IoT and mixed reality in automotive technology.
+## Overview
+This repository hosts the source code and resources for a state-of-the-art mixed-reality application developed with Microsoft HoloLens 2, Unity, C#, Azure services, and the MXChip IoT DevKit. The application is centered around gathering, transmitting, analyzing, and visualizing real-time telemetry data from a car's environment, demonstrating an innovative blend of IoT and mixed reality in automotive technology.
 
-Key Features
-Data Collection: Utilizes MXChip IoT DevKit to collect various telemetry data points from a car's environment.
-Azure Integration: Implements Azure services for efficient and secure data transmission and analysis.
-Mixed-Reality Interface: Leverages Microsoft HoloLens 2 for an immersive visualization experience, providing real-time data interaction in a mixed-reality environment.
-Custom Unity Development: The application is built on Unity, utilizing its robust features for creating engaging and interactive UIs.
-Project Structure
-IoT Data Collection: Scripts and configurations for MXChip IoT DevKit.
-Azure Services: Integration code for Azure IoT Central, Stream Analytics, and Blob Storage.
-Unity Project: Unity scenes, scripts, and assets for the mixed-reality application.
-Documentation: Detailed documentation for setup, deployment, and usage.
-Getting Started
-To run this project, you will need:
+## Features
+* **Data Collection**: Leverages the MXChip IoT DevKit for acquiring diverse telemetry data points from a car.
+* **Azure Integration**: Utilizes Azure services for robust data transmission and sophisticated analysis.
+* **Mixed-Reality Interface**: Employs Microsoft HoloLens 2 to create an immersive, interactive mixed-reality visualization experience.
+* **Custom Unity Development**: The application is built in Unity, using its extensive capabilities for crafting dynamic and interactive user interfaces.
 
-Microsoft HoloLens 2
-MXChip IoT DevKit
-Azure subscription
-Unity 2020.x or later
-Refer to the Installation.md for detailed steps on setting up and running the project.
+## Project Structure
+- **IoT Data Collection**: Includes scripts and configurations for the MXChip IoT DevKit.
+- **Azure Services**: Contains integration code for Azure IoT Central, Stream Analytics, and Blob Storage.
+- **Unity Project**: Features Unity scenes, scripts, and assets specific to the mixed-reality application.
+- **Documentation**: Offers comprehensive setup, deployment, and usage guidelines.
 
-Contribution
-Contributions to this project are welcome. Please refer to CONTRIBUTING.md for guidelines on how to contribute.
+## Getting Started
+To utilize this project, you'll need:
+- Microsoft HoloLens 2
+- MXChip IoT DevKit
+- An Azure subscription
+- Unity 2020.x or later version
 
-License
-This project is licensed under the MIT License - see the LICENSE file for details.
+For detailed setup instructions, please see `Installation.md`.
 
-This description provides a clear overview of the project, its main components, how to get started, and contribution guidelines. You can adjust the specifics based on your actual project structure and requirements.
+## Contributing
+We welcome contributions! For guidelines on contributing to this project, please refer to `CONTRIBUTING.md`.
+
+## License
+This project is licensed under the MIT License. See `LICENSE` for more details.
