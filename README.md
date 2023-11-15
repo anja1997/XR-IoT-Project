@@ -15,6 +15,9 @@ This repository hosts the source code and resources for a state-of-the-art mixed
 - **Unity Project**: Features Unity scenes, scripts, and assets specific to the mixed-reality application.
 - **Documentation**: Offers comprehensive setup, deployment, and usage guidelines.
 
+<img width="591" alt="Skärmavbild 2023-11-15 kl  12 24 43" src="https://github.com/anja1997/XR-IoT-Project/assets/116280887/b4bb08fb-6ea4-4851-8146-91bd92f08fbb">
+
+
 ## Getting Started
 To utilize this project, you'll need:
 - Microsoft HoloLens 2
