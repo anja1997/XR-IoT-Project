@@ -1,0 +1,111 @@
+using System;
+using System.Collections;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+
+public class ProgressController : MonoBehaviour
+{
+    private const float FillEdgePadding = 0.08f;
+
+    // Replace with your actual Blob SAS URL
+    private readonly string blobSASUrl = "Your_Blob_SAS_URL";
+
+    public TelemetryRangeData telemetryRangeData;
+    public Image imageFill;
+    public TextMeshProUGUI textValue;
+    public TextMeshProUGUI textUnit;
+
+    [SerializeField]
+    private double currentValue;
+    public double CurrentValue
+    {
+        get => currentValue;
+        set
+        {
+            currentValue = value;
+            UpdateUI();
+        }
+    }
+
+    [System.Serializable]
+    public class HumidityData
+    {
+        public double humidity; // Only humidity field
+    }
+
+    private void Start()
+    {
+        InvokeRepeating("FetchLatestHumidity", 0f, 4f); // Fetch humidity every 4 seconds
+    }
+
+    private void FetchLatestHumidity()
+    {
+        StartCoroutine(FetchHumidityData());
+    }
+
+    IEnumerator FetchHumidityData()
+    {
+        UnityWebRequest request = UnityWebRequest.Get(blobSASUrl);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Error fetching humidity data: {request.error}");
+        }
+        else
+        {
+            try
+            {
+                string[] lines = request.downloadHandler.text.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+                string lastLine = lines.LastOrDefault();
+
+                if (!string.IsNullOrEmpty(lastLine))
+                {
+                    HumidityData mostRecentData = JsonUtility.FromJson<HumidityData>(lastLine);
+
+                    if (mostRecentData != null)
+                    {
+                        CurrentValue = mostRecentData.humidity; // Update with the humidity value
+                        Debug.Log($"Fetched Humidity: {CurrentValue}");
+                    }
+                    else
+                    {
+                        Debug.LogError("No humidity data found in the last line.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("No humidity data lines found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error parsing humidity data: {ex.Message}");
+            }
+        }
+    }
+
+    private void UpdateUI()
+    {
+        var percent = (float)((currentValue - telemetryRangeData.minValue) / (telemetryRangeData.maxValue - telemetryRangeData.minValue));
+        float fillValue = Mathf.Lerp(FillEdgePadding, 1 - FillEdgePadding, percent);
+        imageFill.fillAmount = fillValue;
+        imageFill.color = telemetryRangeData.healthIndicatorGradient.Evaluate(percent);
+        textValue.text = Math.Round(currentValue, telemetryRangeData.displayRoundingPrecision).ToString("F");
+        if (textUnit)
+        {
+            textUnit.text = telemetryRangeData.units;
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (telemetryRangeData && imageFill && textValue)
+        {
+            UpdateUI();
+        }
+    }
+}
