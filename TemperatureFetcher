@@ -1,0 +1,114 @@
+using System;
+using System.Collections;
+using System.Linq;
+using TMPro;
+using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.UI;
+
+public class ProgressController : MonoBehaviour
+{
+    private const float FillEdgePadding = 0.08f;
+
+    // Replace with your actual Blob SAS URL
+    private readonly string blobSASUrl = "https://forblobstoragegroup2.blob.core.windows.net/group2blobstorage/0_b15a228e8d5045b08517b64df2fd5074_1.json?sp=r&st=2023-12-07T13:45:12Z&se=2024-01-19T21:45:12Z&spr=https&sv=2022-11-02&sr=b&sig=1XDBVR7VyholuHDTGg4io2kX7GmCh24uheusWNFAuRg%3D";
+
+    public TelemetryRangeData telemetryRangeData;
+    public Image imageFill;
+    public TextMeshProUGUI textValue;
+    public TextMeshProUGUI textUnit;
+
+    [SerializeField]
+    private double currentValue;
+    public double CurrentValue
+    {
+        get => currentValue;
+        set
+        {
+            currentValue = value;
+            UpdateUI();
+        }
+    }
+
+    [System.Serializable]
+    public class TemperatureData
+    {
+        public double Temperature;
+    }
+
+    private void Start()
+    {
+        FetchLatestTemperature();
+    }
+
+    private void FetchLatestTemperature()
+    {
+        StartCoroutine(FetchTemperatureData());
+    }
+
+    IEnumerator FetchTemperatureData()
+    {
+        UnityWebRequest request = UnityWebRequest.Get(blobSASUrl);
+        yield return request.SendWebRequest();
+
+        if (request.result != UnityWebRequest.Result.Success)
+        {
+            Debug.LogError($"Error fetching temperature data: {request.error}");
+        }
+        else
+        {
+            try
+            {
+                // Split the downloaded content by lines
+                string[] lines = request.downloadHandler.text.Split(new[] {'\n'}, StringSplitOptions.RemoveEmptyEntries);
+                // Get the last non-empty line
+                string lastLine = lines.LastOrDefault();
+
+                if (!string.IsNullOrEmpty(lastLine))
+                {
+                    // Deserialize the last line
+                    TemperatureData mostRecentData = JsonUtility.FromJson<TemperatureData>(lastLine);
+
+                    if (mostRecentData != null)
+                    {
+                        CurrentValue = mostRecentData.Temperature;
+                        Debug.Log($"Fetched Temperature: {CurrentValue}"); // Log the fetched temperature
+                    }
+                    else
+                    {
+                        Debug.LogError("No temperature data found in the last line.");
+                    }
+                }
+                else
+                {
+                    Debug.LogError("No temperature data lines found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error parsing temperature data: {ex.Message}");
+            }
+        }
+    }
+
+    private void UpdateUI()
+    {
+        var percent = (float)((currentValue - telemetryRangeData.minValue) / (telemetryRangeData.maxValue - telemetryRangeData.minValue));
+        float fillValue = Mathf.Lerp(FillEdgePadding, 1 - FillEdgePadding, percent);
+        imageFill.fillAmount = fillValue;
+        imageFill.color = telemetryRangeData.healthIndicatorGradient.Evaluate(percent);
+        textValue.text = Math.Round(currentValue, telemetryRangeData.displayRoundingPrecision).ToString("F");
+        if (textUnit)
+        {
+            textUnit.text = telemetryRangeData.units;
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (telemetryRangeData && imageFill && textValue)
+        {
+            UpdateUI();
+        }
+    }
+}
